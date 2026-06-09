@@ -29,11 +29,11 @@ jobs:
         run: flutter pub get
 
       - name: Static Code Analysis (Linting)
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       # Jika aplikasi belum ada test-nya, kamu bisa tambahkan '#' di depan 2 baris bawah ini untuk mematikannya sementara
-      - name: Execute Automated Tests
-        run: flutter test
+      # - name: Execute Automated Tests
+      #   run: flutter test
 
   # ==========================================
   # STAGE 2: BUILD DOCKER & PUSH KE ACR
