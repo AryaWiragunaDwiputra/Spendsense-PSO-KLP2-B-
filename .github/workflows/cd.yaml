@@ -1,4 +1,4 @@
-name: Flutter Web CI/CD
+name: CD - Flutter Web Deploy
 
 on:
   push:
@@ -10,37 +10,9 @@ env:
   IMAGE_NAME: spendsense-web
 
 jobs:
-  # ==========================================
-  # STAGE 1: TESTING & PENGECEKAN KODE
-  # ==========================================
-  test:
-    name: Flutter Analyze & Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Static Code Analysis (Linting)
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
-
-      # Jika aplikasi belum ada test-nya, kamu bisa tambahkan '#' di depan 2 baris bawah ini untuk mematikannya sementara
-      # - name: Execute Automated Tests
-      #   run: flutter test
-
-  # ==========================================
-  # STAGE 2: BUILD DOCKER & PUSH KE ACR
-  # ==========================================
+  # Stage 1: Build Docker & Push ke ACR
   build-and-push:
     name: Build & Push to ACR
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -68,9 +40,7 @@ jobs:
           push: true
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.ENV_MODE }}-latest
 
-  # ==========================================
-  # STAGE 3: DEPLOY KE AZURE WEB APP
-  # ==========================================
+  # Stage 2: Deploy ke Azure Web App
   deploy:
     name: CD Deployment
     needs: build-and-push
